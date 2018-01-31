@@ -45,44 +45,7 @@ batch_size = 50
 
 checkpoint_dir = "models/"
 
-TRAIN_DIR = 'train'
-TEST_DIR = 'test'
-
-def label_img(img):
-    word_label = img.split('.')[-3]
-    if word_label == 'cat': return [1,0]
-    elif word_label == 'dog': return [0,1]
-
-def create_train_data():
-    training_data = []
-    for img in tqdm(os.listdir(TRAIN_DIR)):
-        label = label_img(img)
-        path = os.path.join(TRAIN_DIR,img)
-        img = cv2.imread(path,cv2.IMREAD_GRAYSCALE)
-        img = cv2.resize(img, (img_size,img_size))
-        training_data.append([np.array(img),np.array(label)])
-    shuffle(training_data)
-    np.save('train_data.npy', training_data)
-    return training_data
-
-def process_test_data():
-    testing_data = []
-    for img in tqdm(os.listdir(TEST_DIR)):
-        path = os.path.join(TEST_DIR,img)
-        img_num = img.split('.')[0]  #image id
-        img = cv2.imread(path,cv2.IMREAD_GRAYSCALE)
-        img = cv2.resize(img, (img_size,img_size))
-        testing_data.append([np.array(img), img_num])
-        
-    shuffle(testing_data)
-    np.save('test_data.npy', testing_data)
-    return testing_data
-
-#train_data = create_train_data()
-#test_data = process_test_data()
 train_data = np.load('flower_train_data.npy')
-#test_data = np.load('test_data.npy')
-#data = train_data.read_data_sets
 
 def new_weights(shape):
     return tf.Variable(tf.truncated_normal(shape, stddev=0.05))
